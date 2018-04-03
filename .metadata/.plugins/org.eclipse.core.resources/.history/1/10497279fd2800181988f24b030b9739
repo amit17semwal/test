@@ -1,0 +1,306 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.NavigableSet;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
+
+public class Test {
+
+
+	    public static class MyRunnable implements Runnable {
+
+	        private ThreadLocal<Integer> threadLocal =
+	               new ThreadLocal<Integer>(){/*
+	        	  @Override protected Integer initialValue() {
+	        	        return 20;
+	        	    }
+	        */};
+
+	        @Override
+	        public void run() {
+	        	System.out.println(threadLocal.get() + "--");
+	            threadLocal.set( (int) (Math.random() * 100D) );
+	    
+	            try {
+	                Thread.sleep(2000);
+	            } catch (InterruptedException e) {
+	            }
+	    
+	            System.out.println(threadLocal.get());
+	        }
+	    }
+
+
+	  /*  public static void main(String[] args) {
+	    	
+	    }
+	    public static int fibonacci(int number){
+	    	if(number == 1 || number == 2){
+	    	return 1; } return fibonacci(number-1) + fibonacci(number -2); //tail recursion
+	    }*/
+	    static final Set<String> simpleFilters = new HashSet<>();
+	    static final List<String> wildcardFilters = new ArrayList<>();
+	    public static void main2(String[] args) {
+	       // addFilter("a*b");
+	       // addFilter("aa*b");
+	        //addFilter("abc");
+	        //addFilter("abdr*");
+	    	 addFilter("*ab*bc");
+	    //	 System.out.println(isInBlackList("aaabfbc"));
+	    	 
+	    	 int a[] = {1,2,3,4,7,8,6};
+	    	System.out.println(lengthOfNSum(a, 7));
+	    	 
+	    }
+
+	    public static void addFilter(String filter) {
+	        if(filter.contains("*")) {
+	            wildcardFilters.add(filter);
+	        } else {
+	            simpleFilters.add(filter);
+	        }
+	    }
+
+	    public static boolean isInBlackList(String input) {
+	        if(simpleFilters.contains(input)) return true;
+
+	        for(String wildcardFilter : wildcardFilters) {
+	            if(innerCheck(input, wildcardFilter)) return true;
+	        }
+	        return false;
+	    }
+
+	    private static boolean innerCheck(String input, String wildcardFilter) {
+	        if(input.length() < wildcardFilter.length()-1) return false;
+	        int i=0;
+	        boolean passedFirst = true;
+
+	        // make sure the filter prefix until the '*'
+	        // matches with the input
+	        while(wildcardFilter.charAt(i) != '*') {
+	            if(wildcardFilter.charAt(i) !=
+	                    input.charAt(i)) {
+	                passedFirst = false;
+	                break;
+	            }
+	            i++;
+	        }
+
+	        if(!passedFirst) return false;  // no point checking further
+
+	        // we're able to swing to the last char of the wildcard
+	        // filter and compare from there BECAUSE there is only
+	        // one '*' guaranteed from the problem statement
+	        int k = input.length() - 1;
+	        for (int j = wildcardFilter.length() - 1; j > i; j--) {
+	            if (wildcardFilter.charAt(j) !=
+	                    input.charAt(k)) {
+	                return false;
+	            }
+	            k--;
+	        }
+	        return true;
+	    }
+	    
+	    public static int lengthOfNSum(int[] array, int n) {
+	        return lengthOfNSumRec(array, n, 0);
+	    }
+
+	    private static int lengthOfNSumRec(int[] array, int n, int start) {
+	        if(n < 0) {
+	            return -1;
+	        }
+	        if(n == 0) {
+	            return 0;
+	        }
+	        for(int i = start; i < array.length; i++) {
+	            int len = lengthOfNSumRec(array, n - array[i], i + 1);
+	            if(len >= 0) {
+	                return len + 1;
+	            }
+	        }
+	        return -1;
+	    }
+	    
+	    public static void main(String[] args) {
+	    	
+	    	
+	    	
+	    	/*
+	    	mrg2(Arrays.asList("aaa", "bbb", "ddd", "xyxz"),
+	                Arrays.asList("bbb", "ccc", "ccc", "hkp"),
+	                Arrays.asList("ddd", "eee", "ffff", "lmn"));
+	   // 	compressUseStringBuffer("Amit");
+	    //	printfile("a,b,c,d,f");
+	    		String input = "abcdefghijklmnop";
+	    		Integer interval = 4;
+
+	    		Integer start = 0;
+	    		String revInput = "";
+	    		while((start + interval) < input.length()){
+	    			revInput = reverseMe(input, start, start + interval, revInput);
+	    			start = start + interval;
+	    		}
+	    		if(revInput.length() < input.length()){
+	    			revInput = reverseMe(input, start, input.length(), revInput);
+	    		}
+	    		System.out.println(revInput);
+	    	*/}
+	    	public static String reverseMe(String input, Integer start, Integer end, String addTo){
+	    		StringBuilder sb = new StringBuilder(input.substring(start, end));
+	    		return (addTo + sb.reverse());	
+	    	}
+	    public static void mrg2(List<String> s , List<String> s2,List<String> s3)
+	    {
+	    	List<String> mlist = mrg(s,s2);
+	    	mlist= mrg(mlist,s3);
+	    	System.out.println(mlist);
+	    	
+	    }
+	    public static List<String> mrg(List<String> s , List<String> s2) {
+	    	int i=0,j=0,k=0;
+	    	List<String> ls = new ArrayList<>();
+	    	while(i<s.size() && j<s2.size()) {
+	    		if(s.get(i).compareTo(s2.get(j))<0){
+	    			ls.add(s.get(i));
+	    			i++;
+	    		} else if(s.get(i).compareTo(s2.get(j))>0) {
+	    			ls.add(s2.get(j));
+	    			j++;
+	    		} else {
+	    			j++;
+	    			i++;
+	    		}
+	    	}
+	    	if(i!= s.size()) {
+	    		for(;i<s.size();i++) {
+	    			ls.add(s.get(i));
+	    		}
+	    	}
+	    	if(j!= s2.size()) {
+	    		for(;j<s2.size();j++) {
+	    			ls.add(s2.get(j));
+	    		}
+	    	}
+	    	return ls;
+	    }
+	    
+	    private static void permutationString(String s){
+	    	String[] arr = new String[s.length()];
+	    	if(s!=null && s.length() >2) {
+	    		for(int i=0;i<s.length();i++)
+	    		{
+	    			for(int j=i+1;j<s.length();j++) {
+	    			  if(!arr[i].contains(""+s.charAt(j)+""))
+	    				arr[i]+=s.charAt(i)+s.charAt(j);
+	    			}
+	    		}
+	    	}
+	    	
+	    }
+	    
+	    private static void compressUseStringBuffer(String string) {
+			
+			System.out.println("before compress String:"+string);
+			System.out.println("before compress size:"+string.length());
+			int size = countCompress(string);
+			
+			if(string.length() <size)
+			{
+				System.out.println("Actual string is having less size:"+ string);
+			}
+			int count = 1;
+			char last = string.charAt(0);
+			StringBuffer newString = new StringBuffer();
+			for(int i=1; i<string.length();i++){
+				if(string.charAt(i) == last){
+					count++;
+				}else{
+					
+					newString.append(last);
+					newString.append(count);
+					last = string.charAt(i);
+					count = 1;
+				}
+			}
+			newString.append(last);
+			newString.append(count);
+			System.out.println("Compressed SB:"+newString);
+			deCompressUseStringBuffer(newString.toString());
+		}
+
+		private static int countCompress(String string) {
+			char last = string.charAt(0);
+			int count = 1;
+			int size = 0 ;
+			for(int i = 1; i<string.length(); i++){
+				if(string.charAt(i) == last){
+					count++;
+				
+				}else{
+					
+					last = string.charAt(i);
+					size += 1 + String.valueOf(count).length(); 
+					count = 1;
+				}
+			}
+			
+			size += 1+String.valueOf(count).length();
+			System.out.println("After Compress size:"+size);
+			return size;
+		}
+static void printfile(String str) {
+String[]as =	str.split(",");
+	System.out.println(as[as.length-2]);
+}
+		private static void deCompressUseStringBuffer(String string) {
+			
+			System.out.println("before decompress size:"+string.length());
+			
+			char last = string.charAt(0);
+			int charCompSize = 1;
+			StringBuffer newString = new StringBuffer();
+			for(int i=1; i<string.length();i++){
+		
+				if(i%2 == 0){
+					last = string.charAt(i);
+				}else{
+					charCompSize = Character.getNumericValue(string.charAt(i));
+				}		
+				for(int j=0;j<charCompSize;j++){
+					newString.append(last);
+					
+				}
+				charCompSize = 0;
+		
+			}
+		
+			System.out.println("After decompress size:"+newString.length());
+			System.out.println("Decompressed SB:"+newString);
+		}
+}
+
+class T implements  Runnable {
+	
+	public void run() {
+	
+		for(int i=1;i<=3;i++)
+		{
+			System.out.println("Thread" + Thread.currentThread()+ " == " + i);
+			synchronized (this) {
+				try {
+					wait(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+}

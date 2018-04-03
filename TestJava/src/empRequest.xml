@@ -1,0 +1,12 @@
+<Request Operation="ab" SessionId="bstZhdli" Origin="a" MO="XXX">
+<Connections>
+<amit>
+<SourcePath>aaa</SourcePath>
+<RemoteHost>aaa</RemoteHost>
+<SentFileOp>Remove</SentFileOp>
+<InputFileSyntax>my*</InputFileSyntax>
+<UserName>sss</UserName>
+<Password></Password>
+</amit>
+</Connections>
+</Request>

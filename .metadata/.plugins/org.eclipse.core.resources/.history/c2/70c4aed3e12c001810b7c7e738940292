@@ -1,0 +1,180 @@
+package concurrency;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.IntStream;
+
+public class TheadSample {
+	int count = 0;
+
+	synchronized void increment() {
+		count = count + 1;
+	}
+	ThreadLocal<Integer> thredLocal = new ThreadLocal<>();
+
+	public static void main(String[] args) throws Exception {
+		/*
+		 * Runnable task = () -> { String s = Thread.currentThread().getName();
+		 * System.out.println("Thread Name is :" + s); }; Thread t = new Thread(task);
+		 * t.start();
+		 */
+		// invokeAllDemo();
+		// scheduleExecutorDemo();
+		/*
+		 * TheadSample tm = new TheadSample(); tm.syncronizeTest();
+		 */
+		// testReentrantLock();
+	//	testReadWriteLock();
+		
+		testSemaphor();
+
+	}
+
+	public static void invokeAllDemo() throws Exception {
+		ExecutorService executor = Executors.newWorkStealingPool();
+
+		List<Callable<String>> callables = Arrays.asList(() -> "task1", () -> "task2", () -> "task3");
+
+		executor.invokeAll(callables).stream().map(future -> {
+			try {
+				return future.get();
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+		}).forEach(System.out::println);
+	}
+
+	public static void scheduleExecutorDemo() throws Exception {
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		Runnable task = () -> System.out.println("Scheduling: " + System.nanoTime());
+		ScheduledFuture<?> future = executor.schedule(task, 3, TimeUnit.SECONDS);
+		TimeUnit.MILLISECONDS.sleep(1337);
+		long remainingDelay = future.getDelay(TimeUnit.MILLISECONDS);
+		System.out.printf("Remaining Delay: %sms", remainingDelay);
+	}
+
+	public void syncronizeTest() throws Exception {
+		ExecutorService executor = Executors.newFixedThreadPool(2);
+
+		IntStream.range(0, 10000).forEach(i -> executor.submit(this::increment));
+
+		executor.shutdown();
+		System.out.println(count); // 9965
+	}
+
+	public static void testReentrantLock() {
+		ExecutorService executor = Executors.newFixedThreadPool(2);
+		ReentrantLock lock = new ReentrantLock();
+
+		executor.submit(() -> {
+			lock.lock();
+			try {
+				Thread.sleep(2000);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				lock.unlock();
+			}
+		});
+
+		executor.submit(() -> {
+			System.out.println("Locked: " + lock.isLocked());
+			System.out.println("Held by me: " + lock.isHeldByCurrentThread());
+			boolean locked = lock.tryLock();
+			System.out.println("Lock acquired: " + locked);
+			try {
+				Thread.sleep(1000);
+				locked = lock.tryLock();
+				System.out.println("Lock acquired: " + locked);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+
+		executor.shutdown();
+	}
+
+	public static void testReadWriteLock() throws InterruptedException {
+		ExecutorService executor = Executors.newFixedThreadPool(2);
+		Map<String, String> map = new HashMap<>();
+		ReadWriteLock lock = new ReentrantReadWriteLock();
+
+		executor.submit(() -> {
+			lock.writeLock().lock();
+			try {
+				Thread.sleep(2000);
+				map.put("foo", "bar");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				lock.writeLock().unlock();
+			}
+		});
+
+		Runnable readTask = () -> {
+			lock.readLock().lock();
+			try {
+				System.out.println(map.get("foo"));
+				map.put("foo", "bar1");
+				map.put("foo1", "bar1");
+				System.out.println(map.get("foo1"));
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				lock.readLock().unlock();
+			}
+		};
+
+		executor.submit(readTask);
+		executor.submit(readTask);
+		executor.shutdown();
+	}
+
+	 public void testSemaphor() {
+		ExecutorService executor = Executors.newFixedThreadPool(10);
+		Semaphore semaphore = new Semaphore(5);
+
+		Runnable longRunningTask = () -> {
+			boolean permit = false;
+			try {
+				permit = semaphore.tryAcquire(1, TimeUnit.SECONDS);
+				if (permit) {
+					System.out.println("Semaphore acquired");
+					if(thredLocal.get()!= 10);
+					thredLocal.set(10);
+					System.out.println(thredLocal);
+					
+					Thread.sleep(985);
+				} else {
+					System.out.println("Could not acquire semaphore");
+				}
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			} finally {
+				if (permit) {
+					semaphore.release();
+				}
+			}
+		};
+		IntStream.range(0, 10).forEach(i -> executor.submit(longRunningTask));
+		executor.shutdown();
+	}
+}

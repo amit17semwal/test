@@ -1,0 +1,44 @@
+package sample.java8.practice;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+interface Formula {
+	double calculate(int a);
+
+	default double sqrt(int a) {
+		return Math.sqrt(a);
+	}
+}
+
+@FunctionalInterface
+interface Converter<F, T> {
+
+	F convert(T a);
+}
+
+public class SimpleFeaturs {
+	public static void main(String[] args) {
+		Formula f = new Formula() {
+			@Override
+			public double calculate(int a) {
+				return 0;
+			}
+		};
+		int num = 1;
+		Converter<Integer, Integer> stringConverter = (from) -> {
+			return from + num;
+		};
+
+		long maxUnsignedInt = (1l << 32) - 1;
+		String string = String.valueOf(maxUnsignedInt);
+		int unsignedInt = Integer.parseUnsignedInt(string, 10);
+		String string2 = Integer.toUnsignedString(unsignedInt, 10);
+		System.out.println(string);
+		System.out.println(string2);
+	}
+
+}

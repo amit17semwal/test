@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<class>  
+   <student rollno="393">
+      <firstname>Dinkar</firstname>    
+      <lastname>Kad</lastname>
+      <nickname>Dinkar</nickname>
+      <marks>85</marks>	 
+   </student>
+   <student rollno="493">	 
+      <firstname>Vaneet</firstname>
+      <lastname>Gupta</lastname>
+      <nickname>Vinni</nickname>
+      <marks>95</marks>
+   </student>
+   <student rollno="593">    
+      <firstname>Jasvir</firstname>
+      <lastname>Singh</lastname>
+      <nickname>Jazz</nickname>
+      <marks>90</marks>
+   </student>
+</class>
+
+<!-- <Request MO=FTPManager Operation=AddConnection SessionId=123>
+    <Connections>
+	        <LinkTask_cdr_cdrout_asn>
+            <SourcePathOrig>/var/opt/fds/CDR/cdrout</>
+            <UnSentFileOp>		  Rename
+                <UnSentPath>/var/opt/fds/CDR/unsent/</>
+                <UnSentSuffix></UnSentSuffix>
+                </UnSentFileOp>
+                <InputFileSyntax>\.ASN$</InputFileSyntax>
+            <DestinationLinks>
+                <DestinationLink>/var/opt/fds/CDR/cdrout_1
+                </DestinationLink>
+                <DestinationLink>/var/opt/fds/CDR/cdrout_2
+                </DestinationLink>
+            </DestinationLinks>
+            <SleepInterval>2</SleepInterval>
+            <MaxDirectorySize>500</MaxDirectorySize>
+            <ConnectionStatus>Running</ConnectionStatus>
+			      <UseTimeHash>0</UseTimeHash>
+        </LinkTask_cdr_cdrout_asn>
+ -->
+ 
+ <?xml version='1.0' encoding='ISO-8859-1' standalone='no'?>
+<Request Operation="AddConnection" SessionId="bstZhdli" Origin="GUI" MO="SFTPManager">
+<Member>Member1</Member>
+<Connections>
+<test>
+<SourcePath>/home/xtharaj/temp</SourcePath>
+<RemoteHost>sekalvd529</RemoteHost>
+<SentFileOp>Remove</SentFileOp>
+<InputFileSyntax>my*</InputFileSyntax>
+<UserName>xtharaj</UserName>
+<Password></Password>
+<DestinationPath>/home/xtharaj/temp2/</DestinationPath>
+<DestinationPathTmp>/home/xtharaj/temp2/</DestinationPathTmp>
+<DestinationSeparator>/</DestinationSeparator>
+<TmpFileSuffix>my</TmpFileSuffix>
+<SleepInterval>10</SleepInterval>
+<RetryInterval>10</RetryInterval>
+<MaxFailsBeforeEvent>3</MaxFailsBeforeEvent>
+<MaxDirectorySize>100</MaxDirectorySize>
+<ConnectionStatus>Stopped</ConnectionStatus>
+<TransferFileOrder>byDateOldest</TransferFileOrder>
+<protocol>sftp</protocol>
+</test>
+</Connections>
+</Request>
+ 

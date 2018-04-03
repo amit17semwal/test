@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+         <!-- XML Schema Generated from XML Document on Fri Mar 04 2016 11:36:42 GMT+0530 (India Standard Time) -->
+         <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+         <xs:element name="Request">
+               <xs:complexType>
+                     <xs:sequence>
+                           <xs:element name="Connections">
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="SourcePath" type="xs:string"></xs:element>
+                                                               <xs:element name="RemoteHost" type="xs:string"></xs:element>
+                                                               <xs:element name="SentFileOp" type="xs:string"></xs:element>
+                                                               <xs:element name="InputFileSyntax" type="xs:string"></xs:element>
+                                                               <xs:element name="UserName" type="xs:string"></xs:element>
+                                                               <xs:element name="Password"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                       </xs:sequence>
+                                 </xs:complexType>
+                           </xs:element>
+                     </xs:sequence>
+                     <xs:attribute name="Operation" type="xs:string"></xs:attribute>
+                     <xs:attribute name="SessionId" type="xs:string"></xs:attribute>
+                     <xs:attribute name="Origin" type="xs:string"></xs:attribute>
+                     <xs:attribute name="MO" type="xs:string"></xs:attribute>
+               </xs:complexType>
+         </xs:element>
+   </xs:schema>
+ 

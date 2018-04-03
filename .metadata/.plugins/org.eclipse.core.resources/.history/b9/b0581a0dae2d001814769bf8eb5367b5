@@ -1,0 +1,32 @@
+package sample.java8.practice;
+
+interface Formula {
+    double calculate(int a);
+
+    default double sqrt(int a) {
+        return Math.sqrt(a);
+    }
+}
+@FunctionalInterface
+interface Converter<F,T> {
+	
+ F convert(T a);
+}
+public class SimpleFeaturs {
+	public static void main(String[] args) {
+		Formula f  = new Formula() {
+			@Override
+			public double calculate(int a) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		};
+		final int num = 1;
+		Converter<Integer, String> stringConverter =
+		        (from) -> String.valueOf(from + num);
+
+		stringConverter.convert(2);
+		System.out.println(f.sqrt(50));
+	}
+
+}

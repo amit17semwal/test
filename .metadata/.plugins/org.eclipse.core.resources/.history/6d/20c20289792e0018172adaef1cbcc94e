@@ -1,0 +1,51 @@
+package sample.java8.practice;
+
+import java.util.ArrayList;
+import java.util.List;
+
+interface Formula {
+	double calculate(int a);
+
+	default double sqrt(int a) {
+		return Math.sqrt(a);
+	}
+}
+
+@FunctionalInterface
+interface Converter<F, T> {
+
+	F convert(T a);
+}
+
+public class SimpleFeaturs {
+	public static void main(String[] args) {
+		Formula f = new Formula() {
+			@Override
+			public double calculate(int a) {
+				return 0;
+			}
+		};
+		int num = 1;
+		Converter<Integer, Integer> stringConverter = (from) -> {
+			return from + num;
+		};
+
+		// stringConverter.convert(2);
+		System.out.println(stringConverter.convert(2));
+		List<String> stringCollection = new ArrayList<>();
+		stringCollection.add("ddd2");
+		stringCollection.add("aaa2");
+		stringCollection.add("bbb1");
+		stringCollection.add("aaa1");
+		stringCollection.add("bbb3");
+		stringCollection.add("ccc");
+		stringCollection.add("bbb2");
+		stringCollection.add("ddd1");
+
+		stringCollection.stream().filter((s) -> s.startsWith("a")).map((s) -> s.toUpperCase())
+				.forEach(System.out::println);
+		System.out.println("-----------");
+		stringCollection.forEach(System.out::println);
+	}
+
+}

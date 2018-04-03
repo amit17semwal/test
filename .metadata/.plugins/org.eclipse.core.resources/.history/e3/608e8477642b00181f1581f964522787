@@ -1,0 +1,63 @@
+package concurrency;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
+
+public class TheadSample {
+	static int count = 0;
+
+	static	void  increment() {
+		count = count + 1;
+	}
+
+	public static void main(String[] args) throws Exception {
+		/*
+		 * Runnable task = () -> { String s = Thread.currentThread().getName();
+		 * System.out.println("Thread Name is :" + s); }; Thread t = new Thread(task);
+		 * t.start();
+		 */
+		// invokeAllDemo();
+		scheduleExecutorDemo();
+
+	}
+
+	public static void invokeAllDemo() throws Exception {
+		ExecutorService executor = Executors.newWorkStealingPool();
+
+		List<Callable<String>> callables = Arrays.asList(() -> "task1", () -> "task2", () -> "task3");
+
+		executor.invokeAll(callables).stream().map(future -> {
+			try {
+				return future.get();
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+		}).forEach(System.out::println);
+	}
+
+	public static void scheduleExecutorDemo() throws Exception {
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		Runnable task = () -> System.out.println("Scheduling: " + System.nanoTime());
+		ScheduledFuture<?> future = executor.schedule(task, 3, TimeUnit.SECONDS);
+		TimeUnit.MILLISECONDS.sleep(1337);
+		long remainingDelay = future.getDelay(TimeUnit.MILLISECONDS);
+		System.out.printf("Remaining Delay: %sms", remainingDelay);
+	}
+
+	public static void syncronizeTest() {
+		ExecutorService executor = Executors.newFixedThreadPool(2);
+
+		IntStream.range(0, 10000).forEach(i -> executor.submit(increment()));
+
+		executor.shutdown();
+
+		System.out.println(count); // 9965
+	}
+}

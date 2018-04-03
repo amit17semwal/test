@@ -1,0 +1,77 @@
+package sample.java8.practice;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+interface Formula {
+	double calculate(int a);
+
+	default double sqrt(int a) {
+		return Math.sqrt(a);
+	}
+}
+class Outer {
+    Nested nested;
+    Nested getNested() {
+        return nested;
+    }
+}
+class Nested {
+    Inner inner;
+    Inner getInner() {
+        return inner;
+    }
+}
+class Inner {
+    String foo;
+    String getFoo() {
+        return foo;
+    }
+}
+@FunctionalInterface
+interface Converter<F, T> {
+
+	F convert(T a);
+}
+
+public class SimpleFeaturs {
+	
+	public static <T> Optional<T> resolve(Supplier<T> resolver) {
+	    try {
+	        T result = resolver.get();
+	        return Optional.ofNullable(result);
+	    }
+	    catch (NullPointerException e) {
+	        return Optional.empty();
+	    }
+	}
+	public static void main(String[] args) {
+		
+		Outer obj = new Outer();
+		resolve(() -> obj.getNested().getInner().getFoo())
+		    .ifPresent(System.out::println);
+		
+		Formula f = new Formula() {
+			@Override
+			public double calculate(int a) {
+				return 0;
+			}
+		};
+		int num = 1;
+		Converter<Integer, Integer> stringConverter = (from) -> {
+			return from + num;
+		};
+
+		long maxUnsignedInt = (1l << 32) - 1;
+		String string = String.valueOf(maxUnsignedInt);
+		int unsignedInt = Integer.parseUnsignedInt(string, 10);
+		String string2 = Integer.toUnsignedString(unsignedInt, 10);
+		System.out.println(string);
+		System.out.println(string2);
+	}
+
+}
